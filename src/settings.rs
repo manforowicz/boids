@@ -1,44 +1,39 @@
-//Manages all sliders and settings
+//! Manages settings and settings UI.
 
 use macroquad::prelude::*;
 use macroquad::ui::{hash, root_ui, widgets};
 use std::ops::Range;
 
 pub struct Settings {
-    pub start: bool,
+    pub paused: bool,
+    pub predator: bool,
     pub population: f32,
-    //pub sensing_radius: f32,
     pub spacing_goal: f32,
-    pub separation_strength: f32,
-    pub cohesion_strength: f32,
-    pub alignment_strength: f32,
+    pub separation_weight: f32,
+    pub cohesion_weight: f32,
+    pub alignment_weight: f32,
     pub target_speed: f32,
-    pub speed_strength: f32
-    
+    pub speed_weight: f32,
 }
 
 impl Default for Settings {
     fn default() -> Self {
         Self {
-            start: true,
-            population: 100.,
-            //sensing_radius: 300.,
-            spacing_goal: screen_width() / 30.,
-            separation_strength: 5.,
-            cohesion_strength: 5.,
-            alignment_strength: 5.,
+            paused: true,
+            predator: true,
+            population: screen_width() * screen_height() * 0.0006,
+            spacing_goal: 40.,
+            separation_weight: 5.,
+            cohesion_weight: 5.,
+            alignment_weight: 5.,
             target_speed: 5.,
-            speed_strength: 5.
-            
+            speed_weight: 5.,
         }
     }
 }
 
 macro_rules! slider {
-    ($ui:ident, $settings:ident. $name:ident) => {
-        slider!($ui, $settings.$name, 0., 10.)
-    };
-    ($ui:ident, $settings:ident. $name:ident, $start:expr, $stop:expr) => {
+    ($ui:expr, $settings:ident. $name:ident, $start:expr, $stop:expr) => {
         $ui.slider(
             hash!(),
             &stringify!($name).replace("_", " "),
@@ -53,20 +48,20 @@ macro_rules! slider {
 
 impl Settings {
     pub fn draw_ui(&mut self) {
-        widgets::Popup::new(hash!(), vec2(300., 180.)).ui(&mut root_ui(), |ui| {
-            ui.checkbox(hash!(), "START!", &mut self.start);
-            
-            slider!(ui, self.population, 0., 200.);
-            //slider!(ui, self.sensing_radius, 50., 500.);
-            slider!(ui, self.spacing_goal, 0., 200.);
-            slider!(ui, self.separation_strength);
-            slider!(ui, self.cohesion_strength);
-            slider!(ui, self.alignment_strength);
-            slider!(ui, self.target_speed);
-            slider!(ui, self.speed_strength);
-            
+        widgets::Popup::new(hash!(), vec2(250., 180.)).ui(&mut root_ui(), |ui| {
+            ui.checkbox(hash!(), "START!", &mut self.paused);
+            ui.checkbox(hash!(), "Predator", &mut self.predator);
+            slider!(ui, self.population, 0., 2000.);
+            slider!(ui, self.spacing_goal, 0., 100.);
+            slider!(ui, self.separation_weight, 0., 10.);
+            slider!(ui, self.cohesion_weight, 0., 10.);
+            slider!(ui, self.alignment_weight, 0., 10.);
+            slider!(ui, self.target_speed, 0., 10.);
+            slider!(ui, self.speed_weight, 0., 10.);
+
+            self.population = self.population.round();
         });
 
-        draw_rectangle(0., 0., 350., 180., Color::new(1., 1., 1., 0.5));
+        draw_rectangle(0., 0., 300., 180., Color::new(0.95, 0.95, 0.95, 0.8));
     }
 }

@@ -1,31 +1,23 @@
+#![forbid(unsafe_code)]
 #![warn(clippy::all)]
 
 use macroquad::prelude::*;
 
-mod obstacle;
-use crate::obstacle::Obstacles;
-
 mod settings;
 use crate::settings::Settings;
 
-mod used_bird;
-use crate::used_bird::Birds;
+mod boids;
+use crate::boids::Boids;
 
-#[macroquad::main("flocking_sim")]
+#[macroquad::main("Boids")]
 async fn main() {
     let mut settings = Settings::default();
-    let mut birds = Birds::new(settings.population as usize);
-    let mut obstacles = Obstacles::new();
+    let mut birds = Boids::new(settings.population as usize);
 
-    // MAIN GAME LOOP
     loop {
-        clear_background(LIGHTGRAY);
+        clear_background(WHITE);
 
-        obstacles.update();
-        obstacles.draw();
-        
-
-        birds.update(&obstacles, &settings);
+        birds.update(&settings);
         birds.draw();
 
         settings.draw_ui();
