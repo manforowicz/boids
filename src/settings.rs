@@ -6,6 +6,7 @@ use std::ops::Range;
 
 pub struct Settings {
     pub paused: bool,
+    pub fullscreen: bool,
     pub predator: bool,
     pub population: f32,
     pub spacing_goal: f32,
@@ -20,6 +21,7 @@ impl Default for Settings {
     fn default() -> Self {
         Self {
             paused: true,
+            fullscreen: false,
             predator: true,
             population: screen_width() * screen_height() * 0.0006,
             spacing_goal: 40.,
@@ -48,8 +50,11 @@ macro_rules! slider {
 
 impl Settings {
     pub fn draw_ui(&mut self) {
+        let old_fullscreen = self.fullscreen;
+
         widgets::Popup::new(hash!(), vec2(250., 180.)).ui(&mut root_ui(), |ui| {
             ui.checkbox(hash!(), "START!", &mut self.paused);
+            ui.checkbox(hash!(), "Fullscreen", &mut self.fullscreen);
             ui.checkbox(hash!(), "Predator", &mut self.predator);
             slider!(ui, self.population, 0., 2000.);
             slider!(ui, self.spacing_goal, 0., 100.);
@@ -61,6 +66,10 @@ impl Settings {
 
             self.population = self.population.round();
         });
+
+        if old_fullscreen != self.fullscreen {
+            set_fullscreen(self.fullscreen);
+        }
 
         draw_rectangle(0., 0., 300., 180., Color::new(0.95, 0.95, 0.95, 0.8));
     }

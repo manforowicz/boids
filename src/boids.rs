@@ -44,10 +44,10 @@ impl Boid {
                 * (neighbor.pos - self.pos).normalize_or_zero();
 
             // alignment
-            neighbor_force += (neighbor.vel - self.vel) * settings.alignment_weight * 0.1;
+            neighbor_force += (neighbor.vel - self.vel) * settings.alignment_weight * 0.15;
 
             // cohesion
-            neighbor_force += (neighbor.pos - self.pos) * settings.cohesion_weight * 0.5;
+            neighbor_force += (neighbor.pos - self.pos) * settings.cohesion_weight * 0.4;
         }
 
         if !neighbors.is_empty() {
@@ -65,7 +65,7 @@ impl Boid {
                 -predator.vel.perp()
             };
 
-            predator_force += (dist - 150.).min(0.) * away_vector * 0.04;
+            predator_force += (dist - 120.).min(0.) * away_vector * 0.05;
         }
 
         if !predators.is_empty() {
@@ -168,7 +168,7 @@ impl Boids {
     }
 
     pub fn update(&mut self, settings: &Settings) {
-        let delta = get_frame_time();
+        let delta = get_frame_time().clamp(0., 0.1);
 
         if self.birds.len() != settings.population as usize {
             self.birds
@@ -211,6 +211,7 @@ impl Boids {
             );
         }
     }
+
     pub fn draw(&self) {
         for bird in &self.birds {
             bird.draw(8.);

@@ -10,6 +10,8 @@ macroquad = "0.4.13"
 kiddo = "4.2.1"
 
 [profile.release]
+strip = true
+opt-level = "z"
 lto = true
 codegen-units = 1
 panic = "abort"
