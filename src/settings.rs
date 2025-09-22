@@ -71,6 +71,6 @@ impl Settings {
             set_fullscreen(self.fullscreen);
         }
 
-        draw_rectangle(0., 0., 300., 180., Color::new(0.95, 0.95, 0.95, 0.8));
+        draw_rectangle(0., 0., 300., 200., Color::new(0.95, 0.95, 0.95, 0.8));
     }
 }

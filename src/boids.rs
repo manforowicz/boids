@@ -80,7 +80,7 @@ impl Boid {
         // cool color mapping
         let color = Color::new(
             0.008 * total_force.length(),
-            0.01 * self.vel.length(),
+            0.05 * self.vel.length() / settings.target_speed,
             0.,
             1.,
         );
@@ -135,7 +135,15 @@ impl Boid {
             (50. - self.pos.y).max(0.) + (screen_height() - 50. - self.pos.y).min(0.);
         let wall_force = 5. * Vec2::new(wall_force_x, wall_force_y);
 
-        speed_force + wall_force
+        let mouse_force = if let Some(mouse_pos) = get_drag_pos() {
+            let dist = mouse_pos.distance(self.pos);
+
+            (dist - 100.).min(0.) * 10.0 * (mouse_pos - self.pos).normalize_or_zero()
+        } else {
+            Vec2::ZERO
+        };
+
+        speed_force + wall_force + mouse_force
     }
 
     fn draw(&self, size: f32) {
@@ -213,5 +221,17 @@ impl Boids {
         for bird in &self.predators {
             bird.draw(12.);
         }
+
+        if let Some(pos) = get_drag_pos() {
+            draw_circle(pos.x, pos.y, 10., Color::from_rgba(10, 200, 10, 100));
+        }
     }
+}
+
+fn get_drag_pos() -> Option<Vec2> {
+    if is_mouse_button_down(MouseButton::Left) {
+        return Some(Vec2::from(mouse_position()));
+    }
+
+    None
 }
