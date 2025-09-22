@@ -149,6 +149,7 @@ impl Boid {
     }
 }
 
+#[derive(Default)]
 pub struct Boids {
     birds: Vec<Boid>,
 
@@ -159,14 +160,6 @@ pub struct Boids {
 }
 
 impl Boids {
-    pub fn new(quantity: usize) -> Self {
-        Self {
-            birds: (0..quantity).map(|_| Boid::new()).collect(),
-            tree: KdTree::with_capacity(quantity),
-            predators: (0..1).map(|_| Boid::new()).collect(),
-        }
-    }
-
     pub fn update(&mut self, settings: &Settings) {
         let delta = get_frame_time().clamp(0., 0.1);
 

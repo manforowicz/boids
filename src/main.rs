@@ -12,7 +12,7 @@ use crate::boids::Boids;
 #[macroquad::main("Boids")]
 async fn main() {
     let mut settings = Settings::default();
-    let mut birds = Boids::new(settings.population as usize);
+    let mut birds = Boids::default();
 
     loop {
         clear_background(WHITE);
